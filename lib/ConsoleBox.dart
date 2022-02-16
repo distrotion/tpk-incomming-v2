@@ -91,6 +91,10 @@ void ConsoleBox(dataset data) {
                               Spacer(),
                               Container(
                                 width: 150,
+                                child: Text(
+                                  "PART_NM",
+                                  // style: TxtStylePOP(fontSize: 20)
+                                ),
                               ),
                               Container(
                                 width: 200,

@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 //------------------------------------
+
+import '../bloc/bloc-data01/cubit.dart';
 
 void onLoadingType01(BuildContext contextin, void newValue, void newValue2) {
   showDialog(
@@ -30,7 +33,7 @@ void onLoadingType01(BuildContext contextin, void newValue, void newValue2) {
   );
 
   Timer(Duration(seconds: 1), () {
-    // BlocProvider.of<BlocPageRebuild>(contextin).rebuildPage();
+    BlocProvider.of<BlocPageRebuild>(contextin).rebuildPage();
     Navigator.pop(contextin);
     newValue2;
   });

@@ -30,3 +30,31 @@ class TxtStyle extends TextStyle {
       this.fontWeight = FontWeight.normal})
       : super();
 }
+
+class TxtStyleBlackBG extends TextStyle {
+  final Color color;
+  final FontWeight fontWeight;
+  final double fontSize;
+  final String fontFamily = 'Mitr';
+  final FontStyle fontStyle = FontStyle.normal;
+
+  const TxtStyleBlackBG(
+      {this.fontSize = 16,
+      this.color = Colors.white,
+      this.fontWeight = FontWeight.normal})
+      : super();
+}
+
+class TxtStyleWhiteBG extends TextStyle {
+  final Color color;
+  final FontWeight fontWeight;
+  final double fontSize;
+  final String fontFamily = 'Mitr';
+  final FontStyle fontStyle = FontStyle.normal;
+
+  const TxtStyleWhiteBG(
+      {this.fontSize = 16,
+      this.color = Colors.black,
+      this.fontWeight = FontWeight.normal})
+      : super();
+}

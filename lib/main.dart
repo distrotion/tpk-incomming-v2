@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'MainBody.dart';
 import 'bloc/bloc-data01/appBlocObserver.dart';
+import 'bloc/bloc-data01/cubit.dart';
 
 //--------------------------------------
 
@@ -18,13 +19,22 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Table test',
-        theme: ThemeData(
-          primarySwatch: Colors.amber,
-        ),
-        home: HomeScreen());
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<BlocPageRebuild>(
+            create: (BuildContext context) =>
+                BlocPageRebuild(), //For rebuild only page inside without app bar/left menu
+          ),
+        ],
+        child: BlocBuilder<BlocPageRebuild, bool>(builder: (_, e) {
+          return MaterialApp(
+            title: 'Flutter Demo',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            home: HomeScreen(),
+          );
+        }));
   }
 }
 

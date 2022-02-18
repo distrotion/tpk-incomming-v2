@@ -94,16 +94,16 @@ class DropDownData_INCM {
 }
 
 DropDownData_INCM zeroDropDownData_MR = DropDownData_INCM(
-  list01: [],
-  list02: [],
-  list03: [],
-  list04: [],
-  list05: [],
-  list06: [],
-  list07: [],
-  list08: [],
-  list09: [],
-  list10: [],
+  list01: [""],
+  list02: [""],
+  list03: [""],
+  list04: [""],
+  list05: [""],
+  list06: [""],
+  list07: [""],
+  list08: [""],
+  list09: [""],
+  list10: [""],
 );
 
 class CallDropDownDataS_INCM {

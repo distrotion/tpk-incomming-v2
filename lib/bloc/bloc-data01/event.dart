@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
+import '../../ConsoleBox.dart';
 import '../../data/model.dart';
 import '../../data_dummy.dart';
 
@@ -33,8 +34,7 @@ class DataSetBloc extends Bloc<DataSetEvent, List<dataset>> {
     final response = await http.post(
         Uri.parse(server + "tblSAPGoodReceive_get"),
         body: {"MATNR": "", "CHARG": ""});
-    print(response.statusCode);
-    print(response.body);
+
     var data_input = [];
     List<dataset> stateoutput = [];
     if (response.statusCode == 200) {
@@ -71,10 +71,13 @@ class DataSetBloc extends Bloc<DataSetEvent, List<dataset>> {
           f26: "",
         ));
       }
+      //stateoutput = data_test
       emit(stateoutput);
     } else {
       print("where is my server");
-      emit([]);
+      //stateoutput = data_test
+      stateoutput = [];
+      emit(stateoutput);
     }
   }
 
@@ -97,7 +100,68 @@ class DropDownData_INCM_Bloc
   }
   Future<void> _PostData01_1(
       DropDownData_INCM toAdd, Emitter<DropDownData_INCM> emit) async {
-    emit(zeroDropDownData_MR);
+    DropDownData_INCM stateoutput = zeroDropDownData_MR;
+    final response = await http
+        .post(Uri.parse(server + "queryItem"), body: {"Qurey": "test"});
+
+    var data_input;
+    if (response.statusCode == 200) {
+      var databuff = jsonDecode(response.body);
+      data_input = databuff[0]['output'];
+      // print(data_input);
+    } else {
+      data_input = '';
+      print("where is my server");
+    }
+
+    if (data_input != '') {
+      stateoutput.list01.clear();
+      stateoutput.list02.clear();
+      stateoutput.list03.clear();
+      stateoutput.list04.clear();
+      stateoutput.list05.clear();
+      stateoutput.list06.clear();
+      stateoutput.list07.clear();
+      stateoutput.list08.clear();
+      stateoutput.list09.clear();
+      stateoutput.list10.clear();
+
+      for (var i = 0; i < data_input['list01'].length; i++) {
+        // print(data_input['list01'][i].toString());
+        stateoutput.list01.add(data_input['list01'][i].toString());
+      }
+
+      stateoutput.list02 = [""];
+      stateoutput.list03 = [""];
+      stateoutput.list04 = [""];
+      stateoutput.list05 = [""];
+      stateoutput.list06 = [""];
+      stateoutput.list07 = [""];
+      stateoutput.list08 = [""];
+      stateoutput.list09 = [""];
+      stateoutput.list10 = [""];
+      stateoutput.list08 = [""];
+      stateoutput.list09 = [""];
+      stateoutput.list10 = [""];
+    } else {
+      stateoutput.list01 = [""];
+      stateoutput.list02 = [""];
+      stateoutput.list03 = [""];
+      stateoutput.list04 = [""];
+      stateoutput.list05 = [""];
+      stateoutput.list06 = [""];
+      stateoutput.list07 = [""];
+      stateoutput.list08 = [""];
+      stateoutput.list09 = [""];
+      stateoutput.list10 = [""];
+    }
+
+    // print(state.list01);
+    // print(state.list02);
+    // print(state.list03);
+    //stateoutput = ["","Appearance_for_Rust","Appearance_for_Scratch"]
+
+    emit(stateoutput);
   }
 }
 
@@ -122,11 +186,199 @@ class CallDropDownDataS_INCM_Bloc
   }
   Future<void> _PostData01_2(CallDropDownDataS_INCM toAdd,
       Emitter<CallDropDownDataS_INCM> emit) async {
+    final response = await http.post(Uri.parse(server + "getDataIncomming"),
+        body: {"MATNR": MATNRnow, "CHARG": CHARGnow});
+    var data_input;
+    if (response.statusCode == 200) {
+      var databuff = jsonDecode(response.body);
+      // print(databuff[0]['output']);
+      if (databuff[0]['status'] == 'ok') {
+        data_input = databuff[0]['output'];
+        // print(data_input);
+
+        var dataset1 = data_input[0]['Appearance_for_Rust'] ?? '';
+        var dataset2 = data_input[0]['Appearance_for_Scratch'] ?? '';
+
+        if (ItemNow == 'Appearance_for_Rust') {
+          if (dataset1 != '') {
+            if (dataset1['status'].toString() == 'WAIT') {
+              statusNow = dataset1['status'];
+              specialAccStatusNow = dataset1['specialAccStatus'];
+              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'];
+              specialAccPicNow = dataset1['specialAccPic'];
+              confirmPass = false;
+              wait = true;
+            } else {
+              statusNow = dataset1['status'];
+              specialAccStatusNow = dataset1['specialAccStatus'];
+              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'];
+              specialAccPicNow = dataset1['specialAccPic'];
+              confirmPass = true;
+              wait = false;
+            }
+          } else {
+            statusNow = '';
+            specialAccStatusNow = '';
+            specialAccCOMMENTNow = '';
+            specialAccPicNow = '';
+            confirmPass = false;
+            wait = false;
+          }
+        } else if (ItemNow == 'Appearance_for_Scratch') {
+          if (dataset2 != '') {
+            if (dataset1['status'].toString() == 'WAIT') {
+              statusNow = dataset1['status'];
+              specialAccStatusNow = dataset1['specialAccStatus'];
+              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'];
+              specialAccPicNow = dataset1['specialAccPic'];
+              confirmPass = false;
+              wait = true;
+            } else {
+              statusNow = dataset1['status'];
+              specialAccStatusNow = dataset1['specialAccStatus'];
+              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'];
+              specialAccPicNow = dataset1['specialAccPic'];
+              confirmPass = true;
+              print("object");
+              wait = false;
+            }
+          } else {
+            statusNow = '';
+            specialAccStatusNow = '';
+            specialAccCOMMENTNow = '';
+            specialAccPicNow = '';
+            confirmPass = false;
+            wait = false;
+          }
+        } else {
+          statusNow = '';
+          specialAccStatusNow = '';
+          specialAccCOMMENTNow = '';
+          specialAccPicNow = '';
+          confirmPass = false;
+          wait = false;
+        }
+      } else {
+        statusNow = '';
+        specialAccStatusNow = '';
+        specialAccCOMMENTNow = '';
+        specialAccPicNow = '';
+        confirmPass = false;
+        wait = false;
+      }
+    } else {
+      data_input = '';
+      print("where is my server");
+    }
+
+    // yield state;
+    // state = ZeCallDropdowndata_INCM;
     emit(ZeCallDropdowndata_INCM);
   }
 
   Future<void> _PostData02_2(CallDropDownDataS_INCM toAdd,
       Emitter<CallDropDownDataS_INCM> emit) async {
+    Object bodyout = {};
+    if (ItemNow == 'Appearance_for_Rust') {
+      bodyout = {
+        "MATNR": MATNRnow,
+        "CHARG": CHARGnow,
+        "MBLNR": MBLNRnow,
+        "BWART": BWARTnow,
+        "MENGE": MENGEnow,
+        "MEINS": MEINSnow,
+        "MAT_FG": MAT_FGnow,
+        "KUNNR": KUNNRnow,
+        "SORTL": SORTLnow,
+        "NAME1": NAME1now,
+        "CUST_LOT": CUST_LOTnow,
+        "PART_NM": PART_NMnow,
+        "PART_NO": PART_NOnow,
+        "PROCESS": PROCESSnow,
+        "OLDMAT_CP": OLDMAT_CPnow,
+        "STATUS": STATUSnow,
+
+        "ITEM": "Appearance_for_Rust",
+        "ITEMstatus": ITEMstatusNow,
+        "ITEMspecialAccStatus": ITEMspecialAccStatusNow,
+        "ITEMspecialAccCOMMENT": ITEMspecialAccCOMMENTNow,
+        "ITEMspecialAccPic": ITEMspecialAccPicNow,
+
+        // "Appearance_for_Rust": {
+        //   "status": 'GOOD',
+        //   "specialAccStatus": '',
+        //   "specialAccCOMMENT": '',
+        //   "specialAccPic": '',
+        // }
+      };
+    } else if (ItemNow == 'Appearance_for_Scratch') {
+      bodyout = {
+        "MATNR": MATNRnow,
+        "CHARG": CHARGnow,
+        "MBLNR": MBLNRnow,
+        "BWART": BWARTnow,
+        "MENGE": MENGEnow,
+        "MEINS": MEINSnow,
+        "MAT_FG": MAT_FGnow,
+        "KUNNR": KUNNRnow,
+        "SORTL": SORTLnow,
+        "NAME1": NAME1now,
+        "CUST_LOT": CUST_LOTnow,
+        "PART_NM": PART_NMnow,
+        "PART_NO": PART_NOnow,
+        "PROCESS": PROCESSnow,
+        "OLDMAT_CP": OLDMAT_CPnow,
+        "STATUS": STATUSnow,
+
+        "ITEM": "Appearance_for_Scratch",
+        "ITEMstatus": ITEMstatusNow,
+        "ITEMspecialAccStatus": ITEMspecialAccStatusNow,
+        "ITEMspecialAccCOMMENT": ITEMspecialAccCOMMENTNow,
+        "ITEMspecialAccPic": ITEMspecialAccPicNow,
+
+        // "Appearance_for_Scratch": {
+        //   "status": '',
+        //   "specialAccStatus": '',
+        //   "specialAccCOMMENT": '',
+        //   "specialAccPic": '',
+        // }
+      };
+    } else {
+      bodyout = {
+        "MATNR": MATNRnow,
+        "CHARG": CHARGnow,
+        "MBLNR": MBLNRnow,
+        "BWART": BWARTnow,
+        "MENGE": MENGEnow,
+        "MEINS": MEINSnow,
+        "MAT_FG": MAT_FGnow,
+        "KUNNR": KUNNRnow,
+        "SORTL": SORTLnow,
+        "NAME1": NAME1now,
+        "CUST_LOT": CUST_LOTnow,
+        "PART_NM": PART_NMnow,
+        "PART_NO": PART_NOnow,
+        "PROCESS": PROCESSnow,
+        "OLDMAT_CP": OLDMAT_CPnow,
+        "STATUS": STATUSnow,
+        "ITEM": "",
+      };
+    }
+
+    // print(bodyout);
+
+    final response = await http.post(Uri.parse(server + "updateDataIncomming"),
+        body: bodyout);
+    var data_input;
+    if (response.statusCode == 200) {
+      var databuff = jsonDecode(response.body);
+      // print(databuff[0]['status']);
+      if (databuff[0]['status'] == 'ok') {
+      } else {}
+    } else {
+      data_input = '';
+      print("where is my server");
+    }
     emit(ZeCallDropdowndata_INCM);
   }
 }

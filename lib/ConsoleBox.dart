@@ -25,6 +25,8 @@ String SpacialAccText = '';
 bool nogood = false;
 bool undercontroltap1 = false;
 
+String PassText = "PASS";
+
 String MATNRnow = '';
 String CHARGnow = '';
 String MBLNRnow = '';
@@ -117,7 +119,6 @@ void ConsoleBox(dataset data, List list01) {
         if (nogood) {
           con = NoGoodConfirm();
         } else {
-          // con = NormalCheck();
           print(wait);
           if (wait) {
             con = WattingItem();
@@ -125,7 +126,7 @@ void ConsoleBox(dataset data, List list01) {
             con = NormalCheck();
           }
         }
-
+        //BlocProvider.of<BlocPageRebuild>(contexttable).rebuildPage();
         // con = NormalCheck();
       }
       ItemNow = _list1[stepindex];
@@ -563,7 +564,41 @@ class WattingItem extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      // nogood = false;
+                      // constatus = 0;
+                      // wait = false;
+                      // confirmPass = true;
+                      ITEMstatusNow = '';
+                      ITEMspecialAccStatusNow = '';
+                      ITEMspecialAccCOMMENTNow = '';
+                      ITEMspecialAccPicNow = '';
+
+                      ITEMstatusNow = 'GOOD';
+                      ITEMspecialAccStatusNow = 'SpecialAccept has approved';
+
+                      // maintablecontext
+                      //     .read<CallDropdowndata_INCM>()
+                      //     .add(calldropdownrequrst_INCM.set02_1);
+                      maintablecontext
+                          .read<CallDropDownDataS_INCM_Bloc>()
+                          .add(CallDropDownDataS_INCM_Pressed_02());
+                      onLoadingType01(
+                          context,
+                          // maintablecontext
+                          //     .read<CallDropdowndata_INCM>()
+                          //     .add(calldropdownrequrst_INCM.set01_1),
+                          maintablecontext
+                              .read<CallDropDownDataS_INCM_Bloc>()
+                              .add(CallDropDownDataS_INCM_Pressed_01()),
+                          BlocProvider.of<BlocPageRebuild>(context)
+                              .rebuildPage());
+                      // BlocProvider.of<BlocPageRebuild>(contexttable)
+                      //     .rebuildPage();
+
+                      BlocProvider.of<BlocPageRebuild>(contexttable)
+                          .rebuildPage();
+                    },
                     child: Container(
                         // color: Colors.red,
                         decoration: BoxDecoration(
@@ -581,16 +616,53 @@ class WattingItem extends StatelessWidget {
                 flex: 1,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                      // color: Colors.red,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2.0, color: Colors.black),
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Colors.red,
-                      ),
-                      child: Center(
-                        child: Text("NO"),
-                      )),
+                  child: InkWell(
+                    onTap: () {
+                      // nogood = false;
+                      // constatus = 0;
+                      // wait = false;
+                      // confirmPass = true;
+                      ITEMstatusNow = '';
+                      ITEMspecialAccStatusNow = '';
+                      ITEMspecialAccCOMMENTNow = '';
+                      ITEMspecialAccPicNow = '';
+
+                      ITEMstatusNow = 'reject';
+                      ITEMspecialAccStatusNow = 'SpecialAccept has approved';
+
+                      // maintablecontext
+                      //     .read<CallDropdowndata_INCM>()
+                      //     .add(calldropdownrequrst_INCM.set02_1);
+                      maintablecontext
+                          .read<CallDropDownDataS_INCM_Bloc>()
+                          .add(CallDropDownDataS_INCM_Pressed_02());
+                      onLoadingType01(
+                          context,
+                          // maintablecontext
+                          //     .read<CallDropdowndata_INCM>()
+                          //     .add(calldropdownrequrst_INCM.set01_1),
+                          maintablecontext
+                              .read<CallDropDownDataS_INCM_Bloc>()
+                              .add(CallDropDownDataS_INCM_Pressed_01()),
+                          BlocProvider.of<BlocPageRebuild>(context)
+                              .rebuildPage());
+                      // BlocProvider.of<BlocPageRebuild>(contexttable)
+                      //     .rebuildPage();
+
+                      BlocProvider.of<BlocPageRebuild>(contexttable)
+                          .rebuildPage();
+                    },
+                    child: Container(
+                        // color: Colors.red,
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2.0, color: Colors.black),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          color: Colors.red,
+                        ),
+                        child: Center(
+                          child: Text("NO"),
+                        )),
+                  ),
                 ),
               ),
             ],
@@ -606,6 +678,17 @@ class NormalCheck extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color col = Colors.white;
+    if (confirmPass) {
+      //statusNow reject
+      if (statusNow == 'reject') {
+        col = Colors.red;
+      } else {
+        col = Colors.green;
+      }
+    } else {
+      col = Colors.white;
+    }
     return Column(
       children: [
         Expanded(
@@ -671,10 +754,12 @@ class NormalCheck extends StatelessWidget {
                                   Border.all(width: 2.0, color: Colors.black),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8)),
-                              color: confirmPass ? Colors.green : Colors.white,
+                              // color: confirmPass ? Colors.green : Colors.white,
+                              color: col,
                             ),
                             child: Center(
-                                child: confirmPass ? Text("PASS") : Text("-")),
+                                child:
+                                    confirmPass ? Text(PassText) : Text("-")),
                           ),
                         ))
                   ],

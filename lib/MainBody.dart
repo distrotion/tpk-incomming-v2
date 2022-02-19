@@ -119,7 +119,7 @@ class _TableBodyState extends State<TableBody> {
                 header: const Text('Table Master'),
                 columns: [
                   DataColumn(
-                      label: const Text('ID'),
+                      label: Text('ID'),
                       onSort: (int columnIndex, bool ascending) => _sort<num>(
                           (dataset d) => d.id, columnIndex, ascending)),
                   DataColumn(
@@ -204,37 +204,55 @@ class MyData extends DataTableSource {
     return DataRow.byIndex(
         index: index,
         selected: data.selected,
-        onSelectChanged: (value) {
-          if (data.selected != value) {
-            //-----------
-            // confirmPass = false;
-            stepindex = 0;
-            itemMax = 0;
-            constatus = 0;
-            wait = false;
-            SpacialAccText = '';
-            nogood = false;
-            //-----------
-            // _selectedCount += value! ? 1 : -1;
-            // assert(_selectedCount >= 0);
-            // data.selected = value;
-            print(index);
-            print(data.f01);
-            print(data.f03);
+        color: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) {
+            return Colors.red;
+          } else {}
 
-            onLoadingType01(
-                context,
-                context
-                    .read<DropDownData_INCM_Bloc>()
-                    .add(DropDownData_INCM_Pressed()),
-                ConsoleBox(data, _list01));
-            notifyListeners();
-          }
+          return null; // Use the default value.
+        }),
+        onSelectChanged: (value) {
+          // if (data.selected != value) {
+          //   _selectedCount += value! ? 1 : -1;
+          //   assert(_selectedCount >= 0);
+          //   data.selected = value;
+          // }
+          // data.selected = true;
+          //-----------
+          // confirmPass = false;
+
+          // print(data.f01);
+
+          // if (data.f01 == '24000001') {
+          //   data.selected = true;
+          // }
+          stepindex = 0;
+          itemMax = 0;
+          constatus = 0;
+          wait = false;
+          SpacialAccText = '';
+          nogood = false;
+          //-----------
+          // _selectedCount += value! ? 1 : -1;
+          // assert(_selectedCount >= 0);
+          // data.selected = value;
+          // print(index);
+          // print(data.f01);
+          // print(data.f03);
+
+          onLoadingType01(
+              context,
+              context
+                  .read<DropDownData_INCM_Bloc>()
+                  .add(DropDownData_INCM_Pressed()),
+              ConsoleBox(data, _list01));
+          notifyListeners();
         },
         cells: [
-          DataCell(Text(data.id.toString()), onTap: () {
-            print(data.f01);
-          }),
+          DataCell(Text(
+            data.id.toString(),
+          )),
           DataCell(Text(data.f01)),
           DataCell(Text(data.f02)),
           DataCell(Text(data.f03)),

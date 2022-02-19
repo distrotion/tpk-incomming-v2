@@ -208,6 +208,15 @@ class CallDropDownDataS_INCM_Bloc
               specialAccPicNow = dataset1['specialAccPic'];
               confirmPass = false;
               wait = true;
+              PassText = 'PASS';
+            } else if (dataset1['status'].toString() == 'reject') {
+              statusNow = dataset1['status'];
+              specialAccStatusNow = dataset1['specialAccStatus'];
+              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'];
+              specialAccPicNow = dataset1['specialAccPic'];
+              confirmPass = true;
+              wait = false;
+              PassText = 'REJECT';
             } else {
               statusNow = dataset1['status'];
               specialAccStatusNow = dataset1['specialAccStatus'];
@@ -215,6 +224,7 @@ class CallDropDownDataS_INCM_Bloc
               specialAccPicNow = dataset1['specialAccPic'];
               confirmPass = true;
               wait = false;
+              PassText = 'PASS';
             }
           } else {
             statusNow = '';
@@ -223,24 +233,35 @@ class CallDropDownDataS_INCM_Bloc
             specialAccPicNow = '';
             confirmPass = false;
             wait = false;
+            PassText = 'PASS';
           }
         } else if (ItemNow == 'Appearance_for_Scratch') {
           if (dataset2 != '') {
-            if (dataset1['status'].toString() == 'WAIT') {
-              statusNow = dataset1['status'];
-              specialAccStatusNow = dataset1['specialAccStatus'];
-              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'];
-              specialAccPicNow = dataset1['specialAccPic'];
+            if (dataset2['status'].toString() == 'WAIT') {
+              statusNow = dataset2['status'];
+              specialAccStatusNow = dataset2['specialAccStatus'];
+              specialAccCOMMENTNow = dataset2['specialAccCOMMENT'];
+              specialAccPicNow = dataset2['specialAccPic'];
               confirmPass = false;
               wait = true;
-            } else {
-              statusNow = dataset1['status'];
-              specialAccStatusNow = dataset1['specialAccStatus'];
-              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'];
-              specialAccPicNow = dataset1['specialAccPic'];
+              PassText = 'PASS';
+            } else if (dataset2['status'].toString() == 'reject') {
+              //statusNow 'reject'
+              statusNow = dataset2['status'];
+              specialAccStatusNow = dataset2['specialAccStatus'];
+              specialAccCOMMENTNow = dataset2['specialAccCOMMENT'];
+              specialAccPicNow = dataset2['specialAccPic'];
               confirmPass = true;
-              print("object");
               wait = false;
+              PassText = 'REJECT';
+            } else {
+              statusNow = dataset2['status'];
+              specialAccStatusNow = dataset2['specialAccStatus'];
+              specialAccCOMMENTNow = dataset2['specialAccCOMMENT'];
+              specialAccPicNow = dataset2['specialAccPic'];
+              confirmPass = true;
+              wait = false;
+              PassText = 'PASS';
             }
           } else {
             statusNow = '';
@@ -249,6 +270,7 @@ class CallDropDownDataS_INCM_Bloc
             specialAccPicNow = '';
             confirmPass = false;
             wait = false;
+            PassText = 'PASS';
           }
         } else {
           statusNow = '';
@@ -257,6 +279,7 @@ class CallDropDownDataS_INCM_Bloc
           specialAccPicNow = '';
           confirmPass = false;
           wait = false;
+          PassText = 'PASS';
         }
       } else {
         statusNow = '';
@@ -265,6 +288,7 @@ class CallDropDownDataS_INCM_Bloc
         specialAccPicNow = '';
         confirmPass = false;
         wait = false;
+        PassText = 'PASS';
       }
     } else {
       data_input = '';

@@ -6,6 +6,7 @@ import 'package:table_test/witget/Loading.dart';
 //------------------------------------
 
 import 'bloc/bloc-data01/event.dart';
+import 'data/Base64Img.dart';
 import 'data/model.dart';
 
 late BuildContext contexttable;
@@ -201,14 +202,24 @@ class MyData extends DataTableSource {
   @override
   DataRow getRow(int index) {
     final dataset data = _data[index];
+    String for_Rust = data.f25;
+    String for_Scratch = data.f26;
     return DataRow.byIndex(
         index: index,
-        selected: data.selected,
+        selected: for_Rust != '-' || for_Scratch != '-',
         color: MaterialStateProperty.resolveWith<Color?>(
             (Set<MaterialState> states) {
-          if (states.contains(MaterialState.selected)) {
+          if (states.contains(MaterialState.selected) &&
+              for_Rust == 'GOOD' &&
+              for_Scratch == 'GOOD') {
+            return Colors.green;
+          } else if (states.contains(MaterialState.selected) &&
+              (for_Rust == 'reject' || for_Scratch == 'reject')) {
             return Colors.red;
-          } else {}
+          } else if (states.contains(MaterialState.selected) &&
+              (for_Rust == 'WAIT' || for_Scratch == 'WAIT')) {
+            return Colors.orange;
+          }
 
           return null; // Use the default value.
         }),
@@ -233,6 +244,7 @@ class MyData extends DataTableSource {
           wait = false;
           SpacialAccText = '';
           nogood = false;
+          base64pic = logo;
           //-----------
           // _selectedCount += value! ? 1 : -1;
           // assert(_selectedCount >= 0);

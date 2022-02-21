@@ -5,15 +5,23 @@ import 'package:table_test/styles/TextStyle.dart';
 import 'package:table_test/witget/ComInputText.dart';
 import 'package:table_test/witget/Loading.dart';
 
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
+import 'package:image/image.dart' as IMG;
+
 //------------------------------------
 
 import 'bloc/bloc-data01/cubit.dart';
 import 'bloc/bloc-data01/event.dart';
+import 'data/Base64Img.dart';
 import 'data/model.dart';
 
 //------------------------------------
 
 late BuildContext maintablecontext;
+
+String base64pic = logo;
 
 bool confirmPass = false;
 int stepindex = 0;
@@ -119,7 +127,6 @@ void ConsoleBox(dataset data, List list01) {
         if (nogood) {
           con = NoGoodConfirm();
         } else {
-          print(wait);
           if (wait) {
             con = WattingItem();
           } else {
@@ -1003,7 +1010,7 @@ class NoGoodConfirm extends StatelessWidget {
                     maintablecontext
                         .read<CallDropDownDataS_INCM_Bloc>()
                         .add(CallDropDownDataS_INCM_Pressed_02());
-                    onLoadingType01(
+                    onLoadingType01_long5(
                         maintablecontext,
                         // maintablecontext
                         //     .read<CallDropdowndata_INCM>()
@@ -1013,6 +1020,7 @@ class NoGoodConfirm extends StatelessWidget {
                             .add(CallDropDownDataS_INCM_Pressed_01()),
                         BlocProvider.of<BlocPageRebuild>(context)
                             .rebuildPage());
+                    // nextItem(context);
                   } else {
                     nogood = false;
                     BlocProvider.of<BlocPageRebuild>(contexttable)
@@ -1021,22 +1029,85 @@ class NoGoodConfirm extends StatelessWidget {
 
                   // BlocProvider.of<BlocPageRebuild>(contexttable).rebuildPage();
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2.0, color: Colors.black),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                    color: Colors.greenAccent,
-                  ),
-                  child: Center(
-                    child: Text("FINISH"),
-                  ),
-                  // color: Colors.orange,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        FileUploadButton(),
+                        PicShow(base64: base64pic),
+                      ],
+                    ),
+                    Spacer(),
+                    Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 2.0, color: Colors.black),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        color: Colors.greenAccent,
+                      ),
+                      child: Center(
+                        child: Text("FINISH"),
+                      ),
+                      // color: Colors.orange,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class FileUploadButton extends StatefulWidget {
+  @override
+  State<FileUploadButton> createState() => _FileUploadButtonState();
+}
+
+class _FileUploadButtonState extends State<FileUploadButton> {
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      child: Text('UPLOAD FILE'),
+      onPressed: () async {
+        var picked = await FilePicker.platform.pickFiles();
+        Uint8List? imageByte;
+        Uint8List? resizedData;
+
+        if (picked != null) {
+          imageByte = picked.files.first.bytes;
+          IMG.Image? img = IMG.decodeImage(imageByte!);
+          // IMG.Image? img2 = IMG.copyResize(img!, width: 500);
+          resizedData = IMG.encodeJpg(img!) as Uint8List?;
+          base64pic = base64.encode(resizedData!);
+          BlocProvider.of<BlocPageRebuild>(context).rebuildPage();
+        }
+      },
+    );
+  }
+}
+
+class PicShow extends StatefulWidget {
+  PicShow({Key? key, required this.base64}) : super(key: key);
+  String base64 = base64pic;
+  @override
+  State createState() => new PicShowState();
+}
+
+class PicShowState extends State<PicShow> {
+  // String _base64 = base64pic;
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.base64 == null) return new Container();
+    Uint8List bytes = base64.decode(widget.base64);
+    return Container(
+      height: 50,
+      child: new Image.memory(bytes),
     );
   }
 }

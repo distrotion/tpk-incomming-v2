@@ -3,12 +3,19 @@ import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'package:dio/dio.dart';
 
 import '../../ConsoleBox.dart';
+import '../../MainBody.dart';
+import '../../data/Base64Img.dart';
 import '../../data/model.dart';
 import '../../data_dummy.dart';
+import 'cubit.dart';
 
 String server = 'http://localhost:9210/';
+
+// String server = 'http://172.23.10.39:9210/';
+//172.23.10.39
 
 /// Event being processed by [CounterBloc].
 abstract class DataSetEvent {}
@@ -31,9 +38,14 @@ class DataSetBloc extends Bloc<DataSetEvent, List<dataset>> {
   Future<void> _getdata(
       List<dataset> toAdd, Emitter<List<dataset>> emit) async {
     // http://localhost:9210/tblSAPGoodReceive_get
-    final response = await http.post(
-        Uri.parse(server + "tblSAPGoodReceive_get"),
-        body: {"MATNR": "", "CHARG": ""});
+    final response = await http
+        .post(Uri.parse(server + "tblSAPGoodReceive_get"), body: {
+      "MATNR": "",
+      "CHARG": ""
+    }, headers: {
+      "Accept": "application/json",
+      "Access-Control_Allow_Origin": "*"
+    });
 
     var data_input = [];
     List<dataset> stateoutput = [];
@@ -67,8 +79,8 @@ class DataSetBloc extends Bloc<DataSetEvent, List<dataset>> {
           f22: data_input[i]['PROCESS'].toString(),
           f23: data_input[i]['OLDMAT_CP'].toString(),
           f24: data_input[i]['STATUS'].toString(),
-          f25: "",
-          f26: "",
+          f25: data_input[i]['Appearance_for_Rust_status'].toString(),
+          f26: data_input[i]['Appearance_for_Scratch_status'].toString(),
         ));
       }
       //stateoutput = data_test
@@ -101,14 +113,17 @@ class DropDownData_INCM_Bloc
   Future<void> _PostData01_1(
       DropDownData_INCM toAdd, Emitter<DropDownData_INCM> emit) async {
     DropDownData_INCM stateoutput = zeroDropDownData_MR;
-    final response = await http
-        .post(Uri.parse(server + "queryItem"), body: {"Qurey": "test"});
+    final response = await http.post(Uri.parse(server + "queryItem"), body: {
+      "Qurey": "test"
+    }, headers: {
+      "Accept": "application/json",
+      "Access-Control_Allow_Origin": "*"
+    });
 
     var data_input;
     if (response.statusCode == 200) {
       var databuff = jsonDecode(response.body);
       data_input = databuff[0]['output'];
-      // print(data_input);
     } else {
       data_input = '';
       print("where is my server");
@@ -127,7 +142,6 @@ class DropDownData_INCM_Bloc
       stateoutput.list10.clear();
 
       for (var i = 0; i < data_input['list01'].length; i++) {
-        // print(data_input['list01'][i].toString());
         stateoutput.list01.add(data_input['list01'][i].toString());
       }
 
@@ -156,9 +170,6 @@ class DropDownData_INCM_Bloc
       stateoutput.list10 = [""];
     }
 
-    // print(state.list01);
-    // print(state.list02);
-    // print(state.list03);
     //stateoutput = ["","Appearance_for_Rust","Appearance_for_Scratch"]
 
     emit(stateoutput);
@@ -187,15 +198,20 @@ class CallDropDownDataS_INCM_Bloc
   Future<void> _PostData01_2(CallDropDownDataS_INCM toAdd,
       Emitter<CallDropDownDataS_INCM> emit) async {
     final response = await http.post(Uri.parse(server + "getDataIncomming"),
-        body: {"MATNR": MATNRnow, "CHARG": CHARGnow});
+        body: {
+          "MATNR": MATNRnow,
+          "CHARG": CHARGnow
+        },
+        headers: {
+          "Accept": "application/json",
+          "Access-Control_Allow_Origin": "*"
+        });
     var data_input;
     if (response.statusCode == 200) {
       var databuff = jsonDecode(response.body);
-      // print(databuff[0]['output']);
+
       if (databuff[0]['status'] == 'ok') {
         data_input = databuff[0]['output'];
-        // print(data_input);
-
         var dataset1 = data_input[0]['Appearance_for_Rust'] ?? '';
         var dataset2 = data_input[0]['Appearance_for_Scratch'] ?? '';
 
@@ -326,7 +342,8 @@ class CallDropDownDataS_INCM_Bloc
         "ITEMstatus": ITEMstatusNow,
         "ITEMspecialAccStatus": ITEMspecialAccStatusNow,
         "ITEMspecialAccCOMMENT": ITEMspecialAccCOMMENTNow,
-        "ITEMspecialAccPic": ITEMspecialAccPicNow,
+        // "ITEMspecialAccPic": ITEMspecialAccPicNow,
+        "ITEMspecialAccPic": base64pic,
 
         // "Appearance_for_Rust": {
         //   "status": 'GOOD',
@@ -358,7 +375,10 @@ class CallDropDownDataS_INCM_Bloc
         "ITEMstatus": ITEMstatusNow,
         "ITEMspecialAccStatus": ITEMspecialAccStatusNow,
         "ITEMspecialAccCOMMENT": ITEMspecialAccCOMMENTNow,
-        "ITEMspecialAccPic": ITEMspecialAccPicNow,
+        // "ITEMspecialAccPic": ITEMspecialAccPicNow,
+        "ITEMspecialAccPic": base64pic,
+
+        //base64pic
 
         // "Appearance_for_Scratch": {
         //   "status": '',
@@ -389,20 +409,28 @@ class CallDropDownDataS_INCM_Bloc
       };
     }
 
-    // print(bodyout);
+    // final response = await http.post(Uri.parse(server + "updateDataIncomming"),
+    //     body: bodyout,
+    //     headers: {
+    //       "Accept": "application/json",
+    //       "Access-Control_Allow_Origin": "*"
+    //     }).timeout(const Duration(seconds: 5));
 
-    final response = await http.post(Uri.parse(server + "updateDataIncomming"),
-        body: bodyout);
+    final response =
+        await Dio().post(server + "updateDataIncomming", data: bodyout);
+
     var data_input;
     if (response.statusCode == 200) {
-      var databuff = jsonDecode(response.body);
-      // print(databuff[0]['status']);
-      if (databuff[0]['status'] == 'ok') {
-      } else {}
+      // if (response.data[0]['status'] == 'ok') {
+      // } else {}
+
     } else {
       data_input = '';
       print("where is my server");
     }
+    // base64pic = logo;
+    BlocProvider.of<BlocPageRebuild>(contexttable).rebuildPage();
+
     emit(ZeCallDropdowndata_INCM);
   }
 }

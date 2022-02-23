@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:table_test/ConsoleBox.dart';
+import 'package:table_test/ConsolePanal/ConsoleBox.dart';
 import 'package:table_test/witget/Loading.dart';
 
 //------------------------------------
 
-import 'bloc/bloc-data01/event.dart';
+import 'ConsolePanal/ConsoleSub.dart/nogood.dart';
+import 'bloc/bloc-data01/EventTable01.dart';
 import 'data/Base64Img.dart';
 import 'data/model.dart';
 
@@ -149,9 +150,9 @@ class _TableBodyState extends State<TableBody> {
                           _sort<String>(
                               (dataset d) => d.f05, columnIndex, ascending)),
                 ],
-                columnSpacing: 100,
+                columnSpacing: 25,
                 horizontalMargin: 10,
-                rowsPerPage: 5,
+                rowsPerPage: 10,
                 sortColumnIndex: _sortColumnIndex,
                 sortAscending: _sortAscending,
                 showCheckboxColumn: false,
@@ -240,11 +241,22 @@ class MyData extends DataTableSource {
           // }
           stepindex = 0;
           itemMax = 0;
-          constatus = 0;
           wait = false;
           SpacialAccText = '';
+
+          //-----------
+
+          base64pic01 = logo;
+          base64pic02 = logo;
+          base64pic03 = logo;
+          base64pic04 = logo;
+          base64pic05 = logo;
+
           nogood = false;
-          base64pic = logo;
+          yesno = 0;
+          attper = 0;
+          NoGoodPage = 1;
+          PiecesDropdownSelected = '1';
           //-----------
           // _selectedCount += value! ? 1 : -1;
           // assert(_selectedCount >= 0);

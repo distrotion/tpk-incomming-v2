@@ -5,12 +5,13 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:dio/dio.dart';
 
-import '../../ConsoleBox.dart';
+import '../../ConsolePanal/ConsoleBox.dart';
+import '../../ConsolePanal/ConsoleSub.dart/nogood.dart';
 import '../../MainBody.dart';
 import '../../data/Base64Img.dart';
 import '../../data/model.dart';
 import '../../data_dummy.dart';
-import 'cubit.dart';
+import '../Rebuild/cubit.dart';
 
 String server = 'http://localhost:9210/';
 
@@ -197,47 +198,56 @@ class CallDropDownDataS_INCM_Bloc
   }
   Future<void> _PostData01_2(CallDropDownDataS_INCM toAdd,
       Emitter<CallDropDownDataS_INCM> emit) async {
-    final response = await http.post(Uri.parse(server + "getDataIncomming"),
-        body: {
-          "MATNR": MATNRnow,
-          "CHARG": CHARGnow
-        },
-        headers: {
-          "Accept": "application/json",
-          "Access-Control_Allow_Origin": "*"
-        });
+    // final response = await http.post(Uri.parse(server + "getDataIncomming"),
+    // body: {
+    //   "MATNR": MATNRnow,
+    //   "CHARG": CHARGnow
+    // },
+    //     headers: {
+    //       "Accept": "application/json",
+    //       "Access-Control_Allow_Origin": "*"
+    //     });
+
+    final response = await Dio().post(
+      server + "getDataIncomming",
+      data: {"MATNR": MATNRnow, "CHARG": CHARGnow},
+    );
+
     var data_input;
     if (response.statusCode == 200) {
-      var databuff = jsonDecode(response.body);
+      // var databuff = jsonDecode(response.body);
+      var databuff = response.data;
 
       if (databuff[0]['status'] == 'ok') {
         data_input = databuff[0]['output'];
         var dataset1 = data_input[0]['Appearance_for_Rust'] ?? '';
         var dataset2 = data_input[0]['Appearance_for_Scratch'] ?? '';
 
+        print(dataset1);
+
         if (ItemNow == 'Appearance_for_Rust') {
           if (dataset1 != '') {
             if (dataset1['status'].toString() == 'WAIT') {
-              statusNow = dataset1['status'];
-              specialAccStatusNow = dataset1['specialAccStatus'];
-              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'];
-              specialAccPicNow = dataset1['specialAccPic'];
+              statusNow = dataset1['status'].toString();
+              specialAccStatusNow = dataset1['specialAccStatus'].toString();
+              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'].toString();
+              specialAccPicNow = dataset1['specialAccPic01'].toString();
               confirmPass = false;
               wait = true;
               PassText = 'PASS';
             } else if (dataset1['status'].toString() == 'reject') {
-              statusNow = dataset1['status'];
-              specialAccStatusNow = dataset1['specialAccStatus'];
-              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'];
-              specialAccPicNow = dataset1['specialAccPic'];
+              statusNow = dataset1['status'].toString();
+              specialAccStatusNow = dataset1['specialAccStatus'].toString();
+              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'].toString();
+              specialAccPicNow = dataset1['specialAccPic01'].toString();
               confirmPass = true;
               wait = false;
               PassText = 'REJECT';
             } else {
-              statusNow = dataset1['status'];
-              specialAccStatusNow = dataset1['specialAccStatus'];
-              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'];
-              specialAccPicNow = dataset1['specialAccPic'];
+              statusNow = dataset1['status'].toString();
+              specialAccStatusNow = dataset1['specialAccStatus'].toString();
+              specialAccCOMMENTNow = dataset1['specialAccCOMMENT'].toString();
+              specialAccPicNow = dataset1['specialAccPic01'].toString();
               confirmPass = true;
               wait = false;
               PassText = 'PASS';
@@ -254,27 +264,27 @@ class CallDropDownDataS_INCM_Bloc
         } else if (ItemNow == 'Appearance_for_Scratch') {
           if (dataset2 != '') {
             if (dataset2['status'].toString() == 'WAIT') {
-              statusNow = dataset2['status'];
-              specialAccStatusNow = dataset2['specialAccStatus'];
-              specialAccCOMMENTNow = dataset2['specialAccCOMMENT'];
-              specialAccPicNow = dataset2['specialAccPic'];
+              statusNow = dataset2['status'].toString();
+              specialAccStatusNow = dataset2['specialAccStatus'].toString();
+              specialAccCOMMENTNow = dataset2['specialAccCOMMENT'].toString();
+              specialAccPicNow = dataset2['specialAccPic01'].toString();
               confirmPass = false;
               wait = true;
               PassText = 'PASS';
             } else if (dataset2['status'].toString() == 'reject') {
               //statusNow 'reject'
-              statusNow = dataset2['status'];
-              specialAccStatusNow = dataset2['specialAccStatus'];
-              specialAccCOMMENTNow = dataset2['specialAccCOMMENT'];
-              specialAccPicNow = dataset2['specialAccPic'];
+              statusNow = dataset2['status'].toString();
+              specialAccStatusNow = dataset2['specialAccStatus'].toString();
+              specialAccCOMMENTNow = dataset2['specialAccCOMMENT'].toString();
+              specialAccPicNow = dataset2['specialAccPic01'].toString();
               confirmPass = true;
               wait = false;
               PassText = 'REJECT';
             } else {
-              statusNow = dataset2['status'];
-              specialAccStatusNow = dataset2['specialAccStatus'];
-              specialAccCOMMENTNow = dataset2['specialAccCOMMENT'];
-              specialAccPicNow = dataset2['specialAccPic'];
+              statusNow = dataset2['status'].toString();
+              specialAccStatusNow = dataset2['specialAccStatus'].toString();
+              specialAccCOMMENTNow = dataset2['specialAccCOMMENT'].toString();
+              specialAccPicNow = dataset2['specialAccPic01'].toString();
               confirmPass = true;
               wait = false;
               PassText = 'PASS';
@@ -337,13 +347,19 @@ class CallDropDownDataS_INCM_Bloc
         "PROCESS": PROCESSnow,
         "OLDMAT_CP": OLDMAT_CPnow,
         "STATUS": STATUSnow,
+        "UserNO": UserNO,
 
         "ITEM": "Appearance_for_Rust",
         "ITEMstatus": ITEMstatusNow,
         "ITEMspecialAccStatus": ITEMspecialAccStatusNow,
         "ITEMspecialAccCOMMENT": ITEMspecialAccCOMMENTNow,
         // "ITEMspecialAccPic": ITEMspecialAccPicNow,
-        "ITEMspecialAccPic": base64pic,
+        "ITEMspecialAccPic01": base64pic01,
+        "ITEMspecialAccPic02": base64pic02,
+        "ITEMspecialAccPic03": base64pic03,
+        "ITEMspecialAccPic04": base64pic04,
+        "ITEMspecialAccPic05": base64pic05,
+        "ITEMsPiecesSelected": PiecesDropdownSelected,
 
         // "Appearance_for_Rust": {
         //   "status": 'GOOD',
@@ -370,13 +386,19 @@ class CallDropDownDataS_INCM_Bloc
         "PROCESS": PROCESSnow,
         "OLDMAT_CP": OLDMAT_CPnow,
         "STATUS": STATUSnow,
+        "UserNO": UserNO,
 
         "ITEM": "Appearance_for_Scratch",
         "ITEMstatus": ITEMstatusNow,
         "ITEMspecialAccStatus": ITEMspecialAccStatusNow,
         "ITEMspecialAccCOMMENT": ITEMspecialAccCOMMENTNow,
         // "ITEMspecialAccPic": ITEMspecialAccPicNow,
-        "ITEMspecialAccPic": base64pic,
+        "ITEMspecialAccPic01": base64pic01,
+        "ITEMspecialAccPic02": base64pic02,
+        "ITEMspecialAccPic03": base64pic03,
+        "ITEMspecialAccPic04": base64pic04,
+        "ITEMspecialAccPic05": base64pic05,
+        "ITEMsPiecesSelected": PiecesDropdownSelected,
 
         //base64pic
 
@@ -406,6 +428,7 @@ class CallDropDownDataS_INCM_Bloc
         "OLDMAT_CP": OLDMAT_CPnow,
         "STATUS": STATUSnow,
         "ITEM": "",
+        "UserNO": UserNO,
       };
     }
 

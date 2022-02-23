@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/bloc-data01/cubit.dart';
+import '../bloc/Rebuild/cubit.dart';
 import '../styles/TextStyle.dart';
 import 'ComSpace.dart';
 import 'LayoutAlignWithFullWidth.dart';

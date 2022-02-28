@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:js' as js;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -425,8 +426,15 @@ void ConsoleBox(dataset data, List list01) {
                                     )),
                               )),
                           SizedBox(
-                            height: 52,
-                          ),
+                              height: 52,
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  ReportButton(),
+                                ],
+                              )),
                         ],
                       ),
                     ),
@@ -600,4 +608,22 @@ void RedataPage() {
   attper = 0;
   NoGoodPage = 1;
   PiecesDropdownSelected = '1';
+}
+
+class ReportButton extends StatelessWidget {
+  const ReportButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: ElevatedButton(
+        child: Text('Report'),
+        onPressed: () {
+          js.context
+              .callMethod('open', ['https://stackoverflow.com/questions/ask']);
+        },
+      ),
+    );
+  }
 }

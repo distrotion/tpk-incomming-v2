@@ -11,6 +11,7 @@ import 'data/Base64Img.dart';
 import 'data/model.dart';
 
 late BuildContext contexttable;
+String _searchResult = '';
 
 class BlocTableBody extends StatelessWidget {
   /// {@macro counter_page}
@@ -75,6 +76,8 @@ class _TableBodyState extends State<TableBody> {
   int _sortColumnIndex = 0;
   bool _sortAscending = true;
 
+  TextEditingController controller = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -100,66 +103,95 @@ class _TableBodyState extends State<TableBody> {
 
     // print('------->' + '${_DD_INCM.list01}');
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          // FloatingActionButton(
-          //   child: const Icon(Icons.add),
-          //   onPressed: () {
-          //     print("hi bloc");
-          //     context.read<DataSetBloc>().add(GetDataPressed());
-          //   },
-          // ),
-          const SizedBox(
-            height: 10,
-          ),
-          Center(
-            child: SizedBox(
-              width: 1200,
-              child: PaginatedDataTable(
-                source: _data,
-                header: const Text('Table Master'),
-                columns: [
-                  DataColumn(
-                      label: Text('ID'),
-                      onSort: (int columnIndex, bool ascending) => _sort<num>(
-                          (dataset d) => d.id, columnIndex, ascending)),
-                  DataColumn(
-                      label: Text('Field01'),
-                      onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>(
-                              (dataset d) => d.f01, columnIndex, ascending)),
-                  DataColumn(
-                      label: Text('Field02'),
-                      onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>(
-                              (dataset d) => d.f02, columnIndex, ascending)),
-                  DataColumn(
-                      label: Text('Field03'),
-                      onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>(
-                              (dataset d) => d.f03, columnIndex, ascending)),
-                  DataColumn(
-                      label: Text('Field04'),
-                      onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>(
-                              (dataset d) => d.f04, columnIndex, ascending)),
-                  DataColumn(
-                      label: Text('Field05'),
-                      onSort: (int columnIndex, bool ascending) =>
-                          _sort<String>(
-                              (dataset d) => d.f05, columnIndex, ascending)),
-                ],
-                columnSpacing: 25,
-                horizontalMargin: 10,
-                rowsPerPage: 10,
-                sortColumnIndex: _sortColumnIndex,
-                sortAscending: _sortAscending,
-                showCheckboxColumn: false,
+    return Center(
+      child: SingleChildScrollView(
+        child: SizedBox(
+          width: 1200,
+          child: Column(
+            children: [
+              // FloatingActionButton(
+              //   child: const Icon(Icons.add),
+              //   onPressed: () {
+              //     print("hi bloc");
+              //     context.read<DataSetBloc>().add(GetDataPressed());
+              //   },
+              // ),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.search),
+                  title: TextField(
+                      controller: controller,
+                      decoration: const InputDecoration(
+                          hintText: 'Search', border: InputBorder.none),
+                      onChanged: (value) {
+                        setState(() {
+                          _searchResult = value;
+                        });
+                      }),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.cancel),
+                    onPressed: () {
+                      setState(() {
+                        controller.clear();
+                        _searchResult = '';
+                      });
+                    },
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(
+                height: 10,
+              ),
+              Center(
+                child: SizedBox(
+                  width: 1200,
+                  child: PaginatedDataTable(
+                    source: _data,
+                    header: const Text('Table Master'),
+                    columns: [
+                      DataColumn(
+                          label: Text('ID'),
+                          onSort: (int columnIndex, bool ascending) =>
+                              _sort<num>(
+                                  (dataset d) => d.id, columnIndex, ascending)),
+                      DataColumn(
+                          label: Text('Field01'),
+                          onSort: (int columnIndex, bool ascending) =>
+                              _sort<String>((dataset d) => d.f01, columnIndex,
+                                  ascending)),
+                      DataColumn(
+                          label: Text('Field02'),
+                          onSort: (int columnIndex, bool ascending) =>
+                              _sort<String>((dataset d) => d.f02, columnIndex,
+                                  ascending)),
+                      DataColumn(
+                          label: Text('Field03'),
+                          onSort: (int columnIndex, bool ascending) =>
+                              _sort<String>((dataset d) => d.f03, columnIndex,
+                                  ascending)),
+                      DataColumn(
+                          label: Text('Field04'),
+                          onSort: (int columnIndex, bool ascending) =>
+                              _sort<String>((dataset d) => d.f04, columnIndex,
+                                  ascending)),
+                      DataColumn(
+                          label: Text('Field05'),
+                          onSort: (int columnIndex, bool ascending) =>
+                              _sort<String>((dataset d) => d.f05, columnIndex,
+                                  ascending)),
+                    ],
+                    columnSpacing: 25,
+                    horizontalMargin: 10,
+                    rowsPerPage: 10,
+                    sortColumnIndex: _sortColumnIndex,
+                    sortAscending: _sortAscending,
+                    showCheckboxColumn: false,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -173,6 +205,7 @@ class MyData extends DataTableSource {
   late List<dataset> input;
   late List list01;
   late List _list01;
+  List<dataset> _data_exp = [];
 
   int _selectedCount = 0;
   MyData.empty(this.context) {
@@ -181,10 +214,21 @@ class MyData extends DataTableSource {
   MyData(this.context, this.input, this.list01) {
     _data = input;
     _list01 = list01;
+    _data_exp = [];
+
+    for (int i = 0; i < _data.length; i++) {
+      if (_data[i].f01.toLowerCase().contains(_searchResult) ||
+          _data[i].f02.toLowerCase().contains(_searchResult) ||
+          _data[i].f03.toLowerCase().contains(_searchResult) ||
+          _data[i].f04.toLowerCase().contains(_searchResult) ||
+          _data[i].f05.toLowerCase().contains(_searchResult)) {
+        _data_exp.add(_data[i]);
+      }
+    }
   }
 
   void _sort<T>(Comparable<T> Function(dataset d) getField, bool ascending) {
-    _data.sort((dataset a, dataset b) {
+    _data_exp.sort((dataset a, dataset b) {
       final Comparable<T> aValue = getField(a);
       final Comparable<T> bValue = getField(b);
       return ascending
@@ -197,12 +241,12 @@ class MyData extends DataTableSource {
   @override
   bool get isRowCountApproximate => false;
   @override
-  int get rowCount => _data.length;
+  int get rowCount => _data_exp.length;
   @override
   int get selectedRowCount => 0;
   @override
   DataRow getRow(int index) {
-    final dataset data = _data[index];
+    final dataset data = _data_exp[index];
     String for_Rust = data.f25;
     String for_Scratch = data.f26;
     return DataRow.byIndex(

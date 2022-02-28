@@ -179,6 +179,11 @@ class _TableBodyState extends State<TableBody> {
                           onSort: (int columnIndex, bool ascending) =>
                               _sort<String>((dataset d) => d.f05, columnIndex,
                                   ascending)),
+                      DataColumn(
+                          label: Text('Field06'),
+                          onSort: (int columnIndex, bool ascending) =>
+                              _sort<String>((dataset d) => d.f06, columnIndex,
+                                  ascending)),
                     ],
                     columnSpacing: 25,
                     horizontalMargin: 10,
@@ -221,7 +226,8 @@ class MyData extends DataTableSource {
           _data[i].f02.toLowerCase().contains(_searchResult) ||
           _data[i].f03.toLowerCase().contains(_searchResult) ||
           _data[i].f04.toLowerCase().contains(_searchResult) ||
-          _data[i].f05.toLowerCase().contains(_searchResult)) {
+          _data[i].f05.toLowerCase().contains(_searchResult) ||
+          _data[i].f06.toLowerCase().contains(_searchResult)) {
         _data_exp.add(_data[i]);
       }
     }
@@ -326,6 +332,7 @@ class MyData extends DataTableSource {
           DataCell(Text(data.f03)),
           DataCell(Text(data.f04)),
           DataCell(Text(data.f05)),
+          DataCell(Text(data.f06)),
         ]);
   }
 }

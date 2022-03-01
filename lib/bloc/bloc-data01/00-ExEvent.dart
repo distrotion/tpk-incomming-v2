@@ -17,6 +17,7 @@ class Example_Bloc extends Bloc<Example_Event, int> {
       return _Example_Function_02(0, emit);
     });
   }
+  //-----------------------------------
   Future<void> _Example_Function_01(int toAdd, Emitter<int> emit) async {
     emit(0);
   }

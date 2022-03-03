@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Table test'),
+          title: const Text('INCOMING'),
         ),
         body: BlocTableBody());
   }

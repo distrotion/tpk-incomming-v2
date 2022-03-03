@@ -18,13 +18,13 @@ void onLoadingType01(BuildContext contextin, void newValue, void newValue2) {
         child: Dialog(
           child: Container(
               height: 75,
-              child: new Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(width: 30),
-                  new CircularProgressIndicator(),
+                  CircularProgressIndicator(),
                   SizedBox(width: 20),
-                  new Text("Loading"),
+                  Text("Loading"),
                 ],
               )),
         ),
@@ -70,5 +70,37 @@ void onLoadingType01_long5(
     BlocProvider.of<BlocPageRebuild>(contextin).rebuildPage();
     Navigator.pop(contextin);
     newValue2;
+  });
+}
+
+void onLoadingType02(BuildContext contextin, void newValue) {
+  showDialog(
+    context: contextin,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      newValue;
+      return Container(
+        // color: Colors.red,
+
+        child: Dialog(
+          child: Container(
+              height: 75,
+              child: new Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(width: 30),
+                  new CircularProgressIndicator(),
+                  SizedBox(width: 20),
+                  new Text("Loading"),
+                ],
+              )),
+        ),
+      );
+    },
+  );
+
+  Timer(Duration(seconds: 2), () {
+    BlocProvider.of<BlocPageRebuild>(contextin).rebuildPage();
+    Navigator.pop(contextin);
   });
 }

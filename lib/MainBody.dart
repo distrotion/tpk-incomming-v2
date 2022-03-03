@@ -7,6 +7,7 @@ import 'package:table_test/witget/Loading.dart';
 
 import 'ConsolePanal/ConsoleSub.dart/nogood.dart';
 import 'bloc/bloc-data01/EventTable01.dart';
+import 'bloc/bloc-data01/Report.dart';
 import 'data/Base64Img.dart';
 import 'data/model.dart';
 
@@ -57,6 +58,24 @@ class BlocTableBodyCallData extends StatelessWidget {
         create: (_) => CallDropDownDataS_INCM_Bloc(),
         child: BlocBuilder<CallDropDownDataS_INCM_Bloc, CallDropDownDataS_INCM>(
           builder: (context, CD_INCM) {
+            return BlocReportBodyCallData(data: data, DD_INCM: DD_INCM);
+          },
+        ));
+  }
+}
+
+class BlocReportBodyCallData extends StatelessWidget {
+  BlocReportBodyCallData({Key? key, required this.data, required this.DD_INCM})
+      : super(key: key);
+  List<dataset> data;
+  DropDownData_INCM DD_INCM;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+        create: (_) => Report_Bloc(),
+        child: BlocBuilder<Report_Bloc, int>(
+          builder: (context, nouse) {
             return TableBody(data: data, DD_INCM: DD_INCM);
           },
         ));
@@ -147,7 +166,25 @@ class _TableBodyState extends State<TableBody> {
                   width: 1200,
                   child: PaginatedDataTable(
                     source: _data,
-                    header: const Text('Table Master'),
+                    header: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('INCOMING LIST'),
+                        ElevatedButton(
+                          onPressed: () {
+                            onLoadingType02(
+                                context,
+                                context
+                                    .read<DataSetBloc>()
+                                    .add(GetDataPressed()));
+                          },
+                          child: const Icon(
+                            Icons.refresh,
+                            color: Colors.black,
+                          ),
+                        )
+                      ],
+                    ),
                     columns: [
                       DataColumn(
                           label: Text('ID'),
@@ -155,32 +192,32 @@ class _TableBodyState extends State<TableBody> {
                               _sort<num>(
                                   (dataset d) => d.id, columnIndex, ascending)),
                       DataColumn(
-                          label: Text('Field01'),
+                          label: Text('MATCP'),
                           onSort: (int columnIndex, bool ascending) =>
                               _sort<String>((dataset d) => d.f01, columnIndex,
                                   ascending)),
                       DataColumn(
-                          label: Text('Field02'),
+                          label: Text('CUST NAME'),
                           onSort: (int columnIndex, bool ascending) =>
                               _sort<String>((dataset d) => d.f02, columnIndex,
                                   ascending)),
                       DataColumn(
-                          label: Text('Field03'),
+                          label: Text('PART NAME'),
                           onSort: (int columnIndex, bool ascending) =>
                               _sort<String>((dataset d) => d.f03, columnIndex,
                                   ascending)),
                       DataColumn(
-                          label: Text('Field04'),
+                          label: Text('PART NO'),
                           onSort: (int columnIndex, bool ascending) =>
                               _sort<String>((dataset d) => d.f04, columnIndex,
                                   ascending)),
                       DataColumn(
-                          label: Text('Field05'),
+                          label: Text('CHARG'),
                           onSort: (int columnIndex, bool ascending) =>
                               _sort<String>((dataset d) => d.f05, columnIndex,
                                   ascending)),
                       DataColumn(
-                          label: Text('Field06'),
+                          label: Text('CUST LOT'),
                           onSort: (int columnIndex, bool ascending) =>
                               _sort<String>((dataset d) => d.f06, columnIndex,
                                   ascending)),
@@ -296,11 +333,11 @@ class MyData extends DataTableSource {
 
           //-----------
 
-          base64pic01 = logo;
-          base64pic02 = logo;
-          base64pic03 = logo;
-          base64pic04 = logo;
-          base64pic05 = logo;
+          base64pic01 = imgw;
+          base64pic02 = imgw;
+          base64pic03 = imgw;
+          base64pic04 = imgw;
+          base64pic05 = imgw;
 
           nogood = false;
           yesno = 0;

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:html' as html;
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -11,11 +13,12 @@ import '../../MainBody.dart';
 import '../../data/Base64Img.dart';
 import '../../data/model.dart';
 import '../../data_dummy.dart';
+import '../../witget/Loading.dart';
 import '../Rebuild/cubit.dart';
 
-String server = 'http://localhost:9210/';
+// String server = 'http://localhost:9210/';
 
-// String server = 'http://172.23.10.39:9210/';
+String server = 'http://172.23.10.40:9210/';
 //172.23.10.39
 
 /// Event being processed by [CounterBloc].
@@ -223,10 +226,11 @@ class CallDropDownDataS_INCM_Bloc
         var dataset1 = data_input[0]['Appearance_for_Rust'] ?? '';
         var dataset2 = data_input[0]['Appearance_for_Scratch'] ?? '';
 
-        print(dataset1);
+        // print(dataset1);
 
         if (ItemNow == 'Appearance_for_Rust') {
           if (dataset1 != '') {
+            // print(dataset1);
             if (dataset1['status'].toString() == 'WAIT') {
               statusNow = dataset1['status'].toString();
               specialAccStatusNow = dataset1['specialAccStatus'].toString();
@@ -251,6 +255,7 @@ class CallDropDownDataS_INCM_Bloc
               confirmPass = true;
               wait = false;
               PassText = 'PASS';
+              // nextItem(contexttable);
             }
           } else {
             statusNow = '';
@@ -288,6 +293,10 @@ class CallDropDownDataS_INCM_Bloc
               confirmPass = true;
               wait = false;
               PassText = 'PASS';
+              // html.window.location.reload();
+              // Navigator.pop(contexttable);
+              // onLoadingType02(maintablecontext,
+              //     maintablecontext.read<DataSetBloc>().add(GetDataPressed()));
             }
           } else {
             statusNow = '';

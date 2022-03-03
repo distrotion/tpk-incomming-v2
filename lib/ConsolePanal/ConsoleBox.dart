@@ -13,6 +13,7 @@ import 'package:table_test/witget/Loading.dart';
 
 import '../bloc/Rebuild/cubit.dart';
 import '../bloc/bloc-data01/EventTable01.dart';
+import '../bloc/bloc-data01/Report.dart';
 import '../data/Base64Img.dart';
 import '../data/model.dart';
 import 'ConsoleSub.dart/nogood.dart';
@@ -25,11 +26,11 @@ late BuildContext maintablecontext;
 
 int UserNO = 0;
 
-String base64pic01 = logo;
-String base64pic02 = logo;
-String base64pic03 = logo;
-String base64pic04 = logo;
-String base64pic05 = logo;
+String base64pic01 = imgw;
+String base64pic02 = imgw;
+String base64pic03 = imgw;
+String base64pic04 = imgw;
+String base64pic05 = imgw;
 
 bool confirmPass = false;
 int stepindex = 0;
@@ -432,7 +433,7 @@ void ConsoleBox(dataset data, List list01) {
                                   SizedBox(
                                     width: 10,
                                   ),
-                                  ReportButton(),
+                                  if (statusNow == 'WAIT') ReportButton(),
                                 ],
                               )),
                         ],
@@ -517,6 +518,7 @@ void ConsoleBox(dataset data, List list01) {
                                                     context)
                                                 .rebuildPage());
                                         nextItem(context);
+                                        //contexttable nextItem(contexttable);
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -620,8 +622,12 @@ class ReportButton extends StatelessWidget {
       child: ElevatedButton(
         child: Text('Report'),
         onPressed: () {
-          js.context
-              .callMethod('open', ['https://stackoverflow.com/questions/ask']);
+          // contexttable.read<Report_Bloc>().add(CreateReport());
+          js.context.callMethod('open', [
+            'http://172.20.30.46/ReportServer?%2fReport+Project4%2fincomming-v1&rs:Format=PDF&rs:Command=Render&T1=${MATNRnow}-${CHARGnow}'
+          ]);
+          // print(
+          //     'http://172.20.30.46/ReportServer?%2fReport+Project4%2fincomming-v1&rs:Format=PDF&rs:Command=Render&T1=${MATNRnow}-${CHARGnow}');
         },
       ),
     );

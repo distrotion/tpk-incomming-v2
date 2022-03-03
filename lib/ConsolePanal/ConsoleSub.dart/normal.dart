@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'dart:html' as html;
 
 import '../../MainBody.dart';
 import '../../bloc/Rebuild/cubit.dart';
@@ -130,17 +131,19 @@ class NormalCheck extends StatelessWidget {
                               .read<CallDropDownDataS_INCM_Bloc>()
                               .add(CallDropDownDataS_INCM_Pressed_02());
                           onLoadingType01(
-                              context,
-                              // maintablecontext
-                              //     .read<CallDropdowndata_INCM>()
-                              //     .add(calldropdownrequrst_INCM.set01_1),
-                              maintablecontext
-                                  .read<CallDropDownDataS_INCM_Bloc>()
-                                  .add(CallDropDownDataS_INCM_Pressed_01()),
-                              BlocProvider.of<BlocPageRebuild>(context)
-                                  .rebuildPage());
+                            context,
+                            // maintablecontext
+                            //     .read<CallDropdowndata_INCM>()
+                            //     .add(calldropdownrequrst_INCM.set01_1),
+                            maintablecontext
+                                .read<CallDropDownDataS_INCM_Bloc>()
+                                .add(CallDropDownDataS_INCM_Pressed_01()),
+                            BlocProvider.of<BlocPageRebuild>(context)
+                                .rebuildPage(),
+                          );
                           // BlocProvider.of<BlocPageRebuild>(contexttable)
                           //     .rebuildPage();
+
                         }
                       },
                       child: Container(

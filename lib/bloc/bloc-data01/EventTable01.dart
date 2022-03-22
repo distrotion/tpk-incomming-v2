@@ -19,6 +19,7 @@ import '../Rebuild/cubit.dart';
 // String server = 'http://localhost:9210/';
 
 String server = 'http://172.23.10.40:9210/';
+String serverflush = 'http://172.23.10.40:1880/flush';
 //172.23.10.39
 
 /// Event being processed by [CounterBloc].
@@ -26,6 +27,8 @@ abstract class DataSetEvent {}
 
 /// Notifies bloc to increment state.
 class GetDataPressed extends DataSetEvent {}
+
+class FlushITDataPressed extends DataSetEvent {}
 
 class CounterValue extends DataSetBloc {
   final int value;
@@ -37,6 +40,9 @@ class DataSetBloc extends Bloc<DataSetEvent, List<dataset>> {
   DataSetBloc() : super(<dataset>[]) {
     on<GetDataPressed>((event, emit) {
       return _getdata([], emit);
+    });
+    on<FlushITDataPressed>((event, emit) {
+      return _flushdata([], emit);
     });
   }
   Future<void> _getdata(
@@ -98,6 +104,16 @@ class DataSetBloc extends Bloc<DataSetEvent, List<dataset>> {
   }
 
   Future<void> _PostData01(int toAdd, Emitter<int> emit) async {}
+
+  Future<void> _flushdata(
+      List<dataset> toAdd, Emitter<List<dataset>> emit) async {
+    final response = await http.post(Uri.parse(serverflush), body: {
+      "Qurey": "flush"
+    }, headers: {
+      "Accept": "application/json",
+      "Access-Control_Allow_Origin": "*"
+    });
+  }
 }
 
 //-------------------------------------------------

@@ -6,6 +6,7 @@ import 'package:table_test/witget/Loading.dart';
 //------------------------------------
 
 import 'ConsolePanal/ConsoleSub.dart/nogood.dart';
+import 'bloc/Rebuild/cubit.dart';
 import 'bloc/bloc-data01/EventTable01.dart';
 import 'bloc/bloc-data01/Report.dart';
 import 'data/Base64Img.dart';
@@ -54,11 +55,28 @@ class BlocTableBodyCallData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<dataset> datain = data;
+    if (_searchResult != '') {
+      List<dataset> _data_exp = [];
+
+      for (int i = 0; i < datain.length; i++) {
+        if (datain[i].f01.toLowerCase().contains(_searchResult) ||
+            datain[i].f02.toLowerCase().contains(_searchResult) ||
+            datain[i].f03.toLowerCase().contains(_searchResult) ||
+            datain[i].f04.toLowerCase().contains(_searchResult) ||
+            datain[i].f05.toLowerCase().contains(_searchResult) ||
+            datain[i].f06.toLowerCase().contains(_searchResult)) {
+          _data_exp.add(datain[i]);
+        }
+      }
+
+      datain = _data_exp;
+    }
     return BlocProvider(
         create: (_) => CallDropDownDataS_INCM_Bloc(),
         child: BlocBuilder<CallDropDownDataS_INCM_Bloc, CallDropDownDataS_INCM>(
           builder: (context, CD_INCM) {
-            return BlocReportBodyCallData(data: data, DD_INCM: DD_INCM);
+            return BlocReportBodyCallData(data: datain, DD_INCM: DD_INCM);
           },
         ));
   }
@@ -92,7 +110,7 @@ class TableBody extends StatefulWidget {
 }
 
 class _TableBodyState extends State<TableBody> {
-  int _sortColumnIndex = 0;
+  int _sortColumnIndex = 5;
   bool _sortAscending = true;
 
   TextEditingController controller = TextEditingController();
@@ -108,8 +126,28 @@ class _TableBodyState extends State<TableBody> {
   Widget build(BuildContext context) {
     contexttable = context;
     maintablecontext = context;
+
+    List<dataset> datain = widget.data ?? [];
+
+    // if (_searchResult != '') {
+    //   List<dataset> _data_exp = [];
+
+    //   for (int i = 0; i < datain.length; i++) {
+    //     if (datain[i].f01.toLowerCase().contains(_searchResult) ||
+    //         datain[i].f02.toLowerCase().contains(_searchResult) ||
+    //         datain[i].f03.toLowerCase().contains(_searchResult) ||
+    //         datain[i].f04.toLowerCase().contains(_searchResult) ||
+    //         datain[i].f05.toLowerCase().contains(_searchResult) ||
+    //         datain[i].f06.toLowerCase().contains(_searchResult)) {
+    //       _data_exp.add(datain[i]);
+    //     }
+    //   }
+
+    //   datain = _data_exp;
+    // }
+
     DropDownData_INCM _DD_INCM = widget.DD_INCM ?? zeroDropDownData_MR;
-    final MyData _data = MyData(context, widget.data ?? [], _DD_INCM.list01);
+    MyData _data = MyData(context, datain, _DD_INCM.list01);
 
     void _sort<T>(Comparable<T> Function(dataset d) getField, int columnIndex,
         bool ascending) {
@@ -143,9 +181,11 @@ class _TableBodyState extends State<TableBody> {
                       decoration: const InputDecoration(
                           hintText: 'Search', border: InputBorder.none),
                       onChanged: (value) {
-                        setState(() {
-                          _searchResult = value;
-                        });
+                        // setState(() {
+                        //   _searchResult = value;
+                        // });
+                        _searchResult = value;
+                        BlocProvider.of<BlocPageRebuild>(context).rebuildPage();
                       }),
                   trailing: IconButton(
                     icon: const Icon(Icons.cancel),
@@ -170,18 +210,36 @@ class _TableBodyState extends State<TableBody> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('INCOMING LIST'),
-                        ElevatedButton(
-                          onPressed: () {
-                            onLoadingType02(
-                                context,
-                                context
-                                    .read<DataSetBloc>()
-                                    .add(GetDataPressed()));
-                          },
-                          child: const Icon(
-                            Icons.refresh,
-                            color: Colors.black,
-                          ),
+                        Row(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                onLoadingType02(
+                                    context,
+                                    context
+                                        .read<DataSetBloc>()
+                                        .add(FlushITDataPressed()));
+                              },
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.red),
+                              ),
+                              child: const Text("FLUSH"),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                onLoadingType02(
+                                    context,
+                                    context
+                                        .read<DataSetBloc>()
+                                        .add(GetDataPressed()));
+                              },
+                              child: const Icon(
+                                Icons.refresh,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         )
                       ],
                     ),
@@ -256,22 +314,13 @@ class MyData extends DataTableSource {
   MyData(this.context, this.input, this.list01) {
     _data = input;
     _list01 = list01;
-    _data_exp = [];
+    // _data_exp = [];
 
-    for (int i = 0; i < _data.length; i++) {
-      if (_data[i].f01.toLowerCase().contains(_searchResult) ||
-          _data[i].f02.toLowerCase().contains(_searchResult) ||
-          _data[i].f03.toLowerCase().contains(_searchResult) ||
-          _data[i].f04.toLowerCase().contains(_searchResult) ||
-          _data[i].f05.toLowerCase().contains(_searchResult) ||
-          _data[i].f06.toLowerCase().contains(_searchResult)) {
-        _data_exp.add(_data[i]);
-      }
-    }
+    // _data = _data_exp;
   }
 
   void _sort<T>(Comparable<T> Function(dataset d) getField, bool ascending) {
-    _data_exp.sort((dataset a, dataset b) {
+    _data.sort((dataset a, dataset b) {
       final Comparable<T> aValue = getField(a);
       final Comparable<T> bValue = getField(b);
       return ascending
@@ -284,12 +333,12 @@ class MyData extends DataTableSource {
   @override
   bool get isRowCountApproximate => false;
   @override
-  int get rowCount => _data_exp.length;
+  int get rowCount => _data.length;
   @override
   int get selectedRowCount => 0;
   @override
   DataRow getRow(int index) {
-    final dataset data = _data_exp[index];
+    final dataset data = _data[index];
     String for_Rust = data.f25;
     String for_Scratch = data.f26;
     return DataRow.byIndex(
